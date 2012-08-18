@@ -67,16 +67,18 @@
       (setq index-item (assoc index-item (imenu--make-many-index-alist))))
   (when index-item
     (push-mark)
-    (print index-item)
+    ;;(print index-item)
     (let* ((is-special-item (listp (cdr index-item)))
            (function
             (if is-special-item
                 (nth 2 index-item) imenu-default-goto-function))
            (position (if is-special-item
-                         (cadr index-item) (cdr index-item)))
-           (rest (if is-special-item (cddr index-item))))
-      (switch-to-buffer (or (marker-buffer position) (current-buffer)))
-      (print (current-buffer))
+                         (cadr index-item)
+                       (cdr index-item)))
+           (rest (if is-special-item
+                     (cddr index-item))))
+      (switch-to-buffer (or (condition-case nil (marker-buffer position) (error nil)) (current-buffer)))
+      ;;(print (current-buffer))
       (apply function (car index-item) position rest))
     (run-hooks 'imenu-after-jump-hook)))
 
