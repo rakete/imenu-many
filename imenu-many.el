@@ -22,8 +22,14 @@
                        (loop for buf in (or buffers
                                             (remove-if-not 'identity
                                                            (mapcar (lambda (buf)
-                                                                     (when (eq (with-current-buffer buf major-mode)
-                                                                               current-mode)
+                                                                     (when (or (eq (with-current-buffer buf major-mode)
+                                                                                   current-mode)
+                                                                               (and (or (eq (with-current-buffer buf major-mode) 'c-mode)
+                                                                                        (eq (with-current-buffer buf major-mode) 'c++-mode)
+                                                                                        (eq (with-current-buffer buf major-mode) 'cc-mode))
+                                                                                    (or (eq current-mode 'c-mode)
+                                                                                        (eq current-mode 'c++-mode)
+                                                                                        (eq current-mode 'cc-mode))))
                                                                        buf)) (buffer-list))))
                              append (with-current-buffer buf
                                       (let* ((cache (gethash buf imenu--many-index-cache nil))
