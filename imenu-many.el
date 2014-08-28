@@ -1,7 +1,3 @@
-;; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
-
 (defvar imenu--many-index-cache (make-hash-table))
 
 (defun buffer-list-by-mode (&optional mode)
@@ -67,7 +63,6 @@
       (setq index-item (assoc index-item (imenu--make-many-index-alist))))
   (when index-item
     (push-mark)
-    ;;(print index-item)
     (let* ((is-special-item (listp (cdr index-item)))
            (function
             (if is-special-item
@@ -78,37 +73,7 @@
            (rest (if is-special-item
                      (cddr index-item))))
       (switch-to-buffer (or (condition-case nil (marker-buffer position) (error nil)) (current-buffer)))
-      ;;(print (current-buffer))
       (apply function (car index-item) position rest))
     (run-hooks 'imenu-after-jump-hook)))
-
-;; (defun imenu-many (index-item)
-;;   (interactive (list (imenu-choose-buffer-index)))
-;;   (if (stringp index-item)
-;;       (setq index-item (assoc index-item (imenu--make-many-index-alist))))
-;;   (when index-item
-;;     (push-mark)
-;;     (print index-item)
-;;     (let (position function rest buffer)
-;;       (cond ((and (listp (nthcdr 1 index-item))
-;;                   (listp (car (nth 1 index-item))))
-;;              (setq position (nth 0 (caadr index-item))
-;;                    function (nth 1 (caadr index-item))
-;;                    rest (nth 2 (caadr index-item))
-;;                    buffer (nth 1 (cadr index-item))))
-;;             ((listp (nthcdr 1 index-item))
-;;              (setq position (nth 0 (cadr index-item))
-;;                    function imenu-default-goto-function
-;;                    rest nil
-;;                    buffer (nth 1 (cadr index-item))))
-;;             ((< (nthcdr 1 index-item) 0)
-;;              (setq position (cdr index-item)
-;;                    function imenu-default-goto-function
-;;                    rest nil
-;;                    buffer nil)))
-;;       (print function)
-;;       (with-current-buffer (or buffer (current-buffer))
-;;         (apply function (car index-item) position rest)))
-;;     (run-hooks 'imenu-after-jump-hook)))
 
 (provide 'imenu-many)
